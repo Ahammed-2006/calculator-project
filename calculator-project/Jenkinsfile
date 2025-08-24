@@ -19,8 +19,9 @@ pipeline {
         stage('Push to Local Registry') {
             steps {
                 script {
-                    sh 'docker tag calculator:calculator localhost:5000/calculator:latest'
-                    sh 'docker push localhost:5000/calculator:latest'
+                    sh 'docker tag calculator:calculator <host-ip>:5000/calculator:latest'
+                    sh 'docker push <host-ip>:5000/calculator:latest'
+
                     echo "Docker image pushed to local registry at localhost:5000"
                 }
             }

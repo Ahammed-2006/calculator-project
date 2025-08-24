@@ -4,25 +4,22 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/Ahammed-2006/calculator-project.git'
+                git 'https://github.com/Ahammed-2006/calculator-project.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    sh 'docker build -t calculator:calculator -f calculator-project/Dockerfile calculator-project/'
-                }
+                sh 'docker build -t calculator:calculator -f calculator-project/Dockerfile calculator-project/'
             }
         }
 
         stage('Push to Local Registry') {
             steps {
                 script {
-                    sh 'docker tag calculator:calculator <host-ip>:5000/calculator:latest'
-                    sh 'docker push <host-ip>:5000/calculator:latest'
-
-                    echo "Docker image pushed to local registry at localhost:5000"
+                    def hostIP = sh(script: "hostname -I | awk '{print \$1}'", returnStdout: true).trim()
+                    sh "docker tag calculator:calculator ${hostIP}:5000/calculator:latest"
+                    sh "docker push ${hostIP}:5000/calculator:latest"
                 }
             }
         }
@@ -30,8 +27,7 @@ pipeline {
         stage('Save Docker Image Locally') {
             steps {
                 sh 'docker save calculator:calculator -o calculator.tar'
-                archiveArtifacts artifacts: 'calculator.tar', fingerprint: true
-                echo "Docker image saved locally as calculator.tar and archived as artifact"
+                echo 'Docker image saved locally as calculator.tar'
             }
         }
     }

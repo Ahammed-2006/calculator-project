@@ -4,15 +4,15 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', 
-                    url: 'https://github.com/Ahammed-2006/calculator-project.git'
+                git branch: 'main', url: 'https://github.com/Ahammed-2006/calculator-project.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("calculator:calculator")
+                    // Specify Dockerfile path
+                    sh 'docker build -t calculator:calculator -f calculator-project/Dockerfile calculator-project/'
                 }
             }
         }

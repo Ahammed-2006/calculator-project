@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', 
+                    url: 'https://github.com/Ahammed-2006/calculator-project.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("calculator:calculator")
+                }
+            }
+        }
+
+        stage('Save Docker Image Locally') {
+            steps {
+                sh "docker save calculator:calculator -o calculator.tar"
+                echo "Docker image saved locally as calculator.tar"
+            }
+        }
+    }
+}
